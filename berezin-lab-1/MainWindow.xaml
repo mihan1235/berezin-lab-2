@@ -5,8 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:berezin_lab_1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="MainWindow" Height="670" Width="800">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open"
+                        Executed="OpenImage"
+                        CanExecute="CanOpenImage"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Save"
+                        Executed="SaveImage"
+                        CanExecute="CanSaveImage"></CommandBinding>
+    </Window.CommandBindings>
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.ColumnSpan="2">
+            <MenuItem Header="File">
+                <MenuItem Header="Open"
+                          Command="ApplicationCommands.Open"></MenuItem>
+                <MenuItem Header="Save"
+                          Command="ApplicationCommands.Save"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <StackPanel  Grid.Column="0" Grid.Row="1">
+            <Viewbox MinHeight="600">
+                <Grid Name ="cs" >
+                    <Image Name="ImageObject"
+                    Stretch="Uniform"></Image>
+                    <Canvas >
+                        <Ellipse Stroke="Red" StrokeThickness="2" Canvas.Top="5" Canvas.Left="5" Width="200" Height="200" />
+                        <Line X1="0" Y1="0" X2="200" Y2="150" Stroke="Navy" StrokeThickness="5"/>
+                    </Canvas>
+                </Grid>
+            </Viewbox>
+            <ProgressBar MinHeight="10"
+                         Width="Auto"
+                         IsIndeterminate="True"/>
+        </StackPanel>
     </Grid>
 </Window>
