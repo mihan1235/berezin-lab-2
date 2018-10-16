@@ -29,15 +29,16 @@
                 <MenuItem Header="Save"
                           Command="ApplicationCommands.Save"></MenuItem>
             </MenuItem>
+            <MenuItem Header="Detect"
+                      Click="DetectFace"></MenuItem>
         </Menu>
         <StackPanel  Grid.Column="0" Grid.Row="1">
             <Viewbox MinHeight="600">
                 <Grid Name ="cs" >
                     <Image Name="ImageObject"
                     Stretch="Uniform"></Image>
-                    <Canvas >
-                        <Ellipse Stroke="Red" StrokeThickness="2" Canvas.Top="5" Canvas.Left="5" Width="200" Height="200" />
-                        <Line X1="0" Y1="0" X2="200" Y2="150" Stroke="Navy" StrokeThickness="5"/>
+                    <Canvas Name="ObjectField" >
+                        
                     </Canvas>
                 </Grid>
             </Viewbox>
