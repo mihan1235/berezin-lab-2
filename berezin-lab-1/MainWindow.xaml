@@ -17,11 +17,9 @@
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2">
             <MenuItem Header="File">
                 <MenuItem Header="Open"
@@ -32,19 +30,18 @@
             <MenuItem Header="Detect"
                       Click="DetectFace"></MenuItem>
         </Menu>
-        <StackPanel  Grid.Column="0" Grid.Row="1">
-            <Viewbox MinHeight="600">
-                <Grid Name ="cs" >
-                    <Image Name="ImageObject"
-                    Stretch="Uniform"></Image>
-                    <Canvas Name="ObjectField" >
-                        
-                    </Canvas>
-                </Grid>
-            </Viewbox>
-            <ProgressBar MinHeight="10"
+        <Viewbox MinHeight="600" Grid.Column="0" Grid.Row="1">
+            <Grid Name ="cs" >
+                <Image Name="ImageObject"
+                     VerticalAlignment="Top"></Image>
+                <Canvas Name="ObjectField" >
+
+                </Canvas>
+            </Grid>
+        </Viewbox>
+        <ProgressBar Grid.Row="2" 
+                     MinHeight="10"
                          Width="Auto"
                          IsIndeterminate="True"/>
-        </StackPanel>
     </Grid>
 </Window>
