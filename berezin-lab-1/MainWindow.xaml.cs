@@ -17,8 +17,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace berezin_lab_1
 {
+    using static Json;
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
@@ -76,6 +78,7 @@ namespace berezin_lab_1
                     img = new BitmapImage(new Uri(open_diag.FileName, UriKind.RelativeOrAbsolute));
                     ImageObject.Source = img;
                     FileName = open_diag.FileName;
+                    ObjectField.Children.Clear();
                 }
                 catch (Exception exc)
                 {
@@ -99,72 +102,7 @@ namespace berezin_lab_1
         }
 
 
-        /// <summary>
-        /// Formats the given JSON string by adding line breaks and indents.
-        /// </summary>
-        /// <param name="json">The raw JSON string to format.</param>
-        /// <returns>The formatted JSON string.</returns>
-        static string JsonPrettyPrint(string json)
-        {
-            if (string.IsNullOrEmpty(json))
-                return string.Empty;
-
-            json = json.Replace(Environment.NewLine, "").Replace("\t", "");
-
-            StringBuilder sb = new StringBuilder();
-            bool quote = false;
-            bool ignore = false;
-            int offset = 0;
-            int indentLength = 3;
-
-            foreach (char ch in json)
-            {
-                switch (ch)
-                {
-                    case '"':
-                        if (!ignore) quote = !quote;
-                        break;
-                    case '\'':
-                        if (quote) ignore = !ignore;
-                        break;
-                }
-
-                if (quote)
-                    sb.Append(ch);
-                else
-                {
-                    switch (ch)
-                    {
-                        case '{':
-                        case '[':
-                            sb.Append(ch);
-                            sb.Append(Environment.NewLine);
-                            sb.Append(new string(' ', ++offset * indentLength));
-                            break;
-                        case '}':
-                        case ']':
-                            sb.Append(Environment.NewLine);
-                            sb.Append(new string(' ', --offset * indentLength));
-                            sb.Append(ch);
-                            break;
-                        case ',':
-                            sb.Append(ch);
-                            sb.Append(Environment.NewLine);
-                            sb.Append(new string(' ', offset * indentLength));
-                            break;
-                        case ':':
-                            sb.Append(ch);
-                            sb.Append(' ');
-                            break;
-                        default:
-                            if (ch != ' ') sb.Append(ch);
-                            break;
-                    }
-                }
-            }
-
-            return sb.ToString().Trim();
-        }
+        
 
         // Replace <Subscription Key> with your valid subscription key.
         const string subscriptionKey = "1d95ae676a35431ebd21d1c70ca22eb4";
@@ -216,37 +154,43 @@ namespace berezin_lab_1
 
                 // Display the JSON response.
                 MessageBox.Show(JsonPrettyPrint(contentString));
+                object obj = ConvertToPersons(contentString);
+                if (obj is Error)
+                {
+                    MessageBox.Show(((Error)obj).ToString());
+                }
+                if (obj is List<Person>)
+                {
+                    var PersonsList = (List<Person>)obj;
+                    if (PersonsList.Count != 0)
+                    {
+                        double dpi = img.DpiX;
+                        double resizeFactor = (dpi > 0) ? 96 / dpi : 1;
+                        foreach (var person in PersonsList)
+                        {
+                            Rectangle rect = new Rectangle();
+                            rect.Stroke = new SolidColorBrush(Colors.Yellow);
+                            rect.Fill = new SolidColorBrush(Colors.Transparent);
+                            rect.Width = person.faceRectangle.width * resizeFactor;
+                            rect.Height = person.faceRectangle.height * resizeFactor;
+                            Canvas.SetLeft(rect, person.faceRectangle.left * resizeFactor);
+                            Canvas.SetTop(rect, person.faceRectangle.top * resizeFactor);
+                            ObjectField.Children.Add(rect);
+
+                            Label label = new Label();
+                            label.Content = "age: "+person.faceAttributes.age.ToString() + 
+                                "\ngender: "+person.faceAttributes.gender;
+                            Canvas.SetLeft(label, person.faceRectangle.left * resizeFactor );
+                            Canvas.SetTop(label, person.faceRectangle.top * resizeFactor +
+                                person.faceRectangle.height * resizeFactor);
+                            //label.Background = Brushes.White;
+                            label.Foreground = Brushes.Yellow;
+                            ObjectField.Children.Add(label);
+                        }
+                    }
+                }
             }
             
-            double dpi = img.DpiX;
-            double resizeFactor = (dpi > 0) ? 96 / dpi : 1;
-
-            Rectangle rect = new Rectangle();
-            rect.Stroke = new SolidColorBrush(Colors.Yellow);
-            rect.Fill = new SolidColorBrush(Colors.Transparent);
-            rect.Width = 97 * resizeFactor;
-            rect.Height = 97 * resizeFactor;
-            Canvas.SetLeft(rect, 954*resizeFactor);
-            Canvas.SetTop(rect, 85*resizeFactor);
-            ObjectField.Children.Add(rect);
-
-            rect = new Rectangle();
-            rect.Stroke = new SolidColorBrush(Colors.Yellow);
-            rect.Fill = new SolidColorBrush(Colors.Transparent);
-            rect.Width = 78 * resizeFactor;
-            rect.Height = 78 * resizeFactor;
-            Canvas.SetLeft(rect, 811 * resizeFactor);
-            Canvas.SetTop(rect, 158 * resizeFactor);
-            ObjectField.Children.Add(rect);
-
-            rect = new Rectangle();
-            rect.Stroke = new SolidColorBrush(Colors.Yellow);
-            rect.Fill = new SolidColorBrush(Colors.Transparent);
-            rect.Width = 74 * resizeFactor;
-            rect.Height = 74 * resizeFactor;
-            Canvas.SetLeft(rect, 491 * resizeFactor);
-            Canvas.SetTop(rect, 176 * resizeFactor);
-            ObjectField.Children.Add(rect);
         }
     }
 }
