@@ -155,9 +155,9 @@ namespace berezin_lab_1
                 // Display the JSON response.
                 MessageBox.Show(JsonPrettyPrint(contentString));
                 object obj = ConvertToPersons(contentString);
-                if (obj is Error)
+                if (obj is ErrorResult)
                 {
-                    MessageBox.Show(((Error)obj).ToString());
+                    MessageBox.Show(((ErrorResult)obj).ToString());
                 }
                 if (obj is List<Person>)
                 {
