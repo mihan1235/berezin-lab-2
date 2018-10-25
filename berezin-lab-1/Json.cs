@@ -143,7 +143,7 @@ namespace berezin_lab_1
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
                 try
                 {
                     List<Person> personsList = JsonConvert.DeserializeObject<List<Person>>(json);

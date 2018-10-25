@@ -151,6 +151,7 @@ namespace berezin_lab_1
         {
             foreach(var person_control in persons_list)
             {
+                person_control.ProgressBar.Visibility = Visibility.Visible;
                 HttpClient client = new HttpClient();
 
                 // Request headers.
@@ -184,47 +185,69 @@ namespace berezin_lab_1
                     string contentString = response.Content.ReadAsStringAsync().Result;
                     person_control.JsonFile = contentString;
                     // Display the JSON response.
-                    MessageBox.Show(JsonPrettyPrint(contentString));
+                   // MessageBox.Show(JsonPrettyPrint(contentString));
                     object obj = ConvertToPersons(contentString);
+                    person_control.ProgressBar.Visibility = Visibility.Collapsed;
                     if (obj is ErrorResult)
                     {
-                        MessageBox.Show(((ErrorResult)obj).ToString());
+                        //MessageBox.Show(((ErrorResult)obj).ToString());
                         person_control.ErrorState = true;
+                        person_control.DetectedNum = 0;
+                        person_control.ErrorResult = (ErrorResult)obj;
                     }
                     if (obj is List<Person>)
                     {
                         var PersonsList = (List<Person>)obj;
                         person_control.PersonsList = PersonsList;
                         person_control.DetectedNum = PersonsList.Count;
-                        //if (PersonsList.Count != 0)
-                        //{
-                        //    //double dpi = img.DpiX;
-                        //    //double resizeFactor = (dpi > 0) ? 96 / dpi : 1;
-                        //    foreach (var person in PersonsList)
-                        //    {
-                        //        Rectangle rect = new Rectangle();
-                        //        rect.Stroke = new SolidColorBrush(Colors.Yellow);
-                        //        rect.Fill = new SolidColorBrush(Colors.Transparent);
-                        //        rect.Width = person.faceRectangle.width * resizeFactor;
-                        //        rect.Height = person.faceRectangle.height * resizeFactor;
-                        //        Canvas.SetLeft(rect, person.faceRectangle.left * resizeFactor);
-                        //        Canvas.SetTop(rect, person.faceRectangle.top * resizeFactor);
-                        //        ObjectField.Children.Add(rect);
-
-                        //        Label label = new Label();
-                        //        label.Content = "age: " + person.faceAttributes.age.ToString() +
-                        //            "\ngender: " + person.faceAttributes.gender;
-                        //        Canvas.SetLeft(label, person.faceRectangle.left * resizeFactor);
-                        //        Canvas.SetTop(label, person.faceRectangle.top * resizeFactor +
-                        //            person.faceRectangle.height * resizeFactor);
-                        //        //label.Background = Brushes.White;
-                        //        label.Foreground = Brushes.Yellow;
-                        //        ObjectField.Children.Add(label);
-                        //    }
-                        //}
+                        person_control.Result = true;
                     }
                 }
-            }     
+            }
+            if (PersonListBox.SelectedIndex != -1)
+            {
+                DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
+            }
+        }
+
+        private void DrawInfoOnObjectField(PersonControl obj)
+        {
+            ObjectField.Children.Clear();
+            if (obj.PersonsList.Count != 0)
+            {
+                double resizeFactor = obj.ResizeFactor;
+
+                foreach (var person in obj.PersonsList)
+                {
+                    Rectangle rect = new Rectangle();
+                    rect.Stroke = new SolidColorBrush(Colors.Yellow);
+                    rect.Fill = new SolidColorBrush(Colors.Transparent);
+                    rect.Width = person.faceRectangle.width * resizeFactor;
+                    rect.Height = person.faceRectangle.height * resizeFactor;
+                    Canvas.SetLeft(rect, person.faceRectangle.left * resizeFactor);
+                    Canvas.SetTop(rect, person.faceRectangle.top * resizeFactor);
+                    ObjectField.Children.Add(rect);
+
+                    Label label = new Label();
+                    label.Content = "age: " + person.faceAttributes.age.ToString() +
+                        "\ngender: " + person.faceAttributes.gender;
+                    Canvas.SetLeft(label, person.faceRectangle.left * resizeFactor);
+                    Canvas.SetTop(label, person.faceRectangle.top * resizeFactor +
+                        person.faceRectangle.height * resizeFactor);
+                    //label.Background = Brushes.White;
+                    label.Foreground = Brushes.Yellow;
+                    ObjectField.Children.Add(label);
+                }
+            }
+        }
+
+        private void SelectedPersonControlEvent(object sender, RoutedEventArgs e)
+        {
+            PersonControl obj = (PersonControl)PersonListBox.SelectedItem;
+            if (PersonListBox.SelectedIndex != -1)
+            {
+                DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
+            }
         }
     }
 }

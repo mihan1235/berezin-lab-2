@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +19,12 @@ namespace berezin_lab_1
     /// <summary>
     /// Логика взаимодействия для PersonControl.xaml
     /// </summary>
-    public partial class PersonControl : UserControl
+    public partial class PersonControl : UserControl, INotifyPropertyChanged
     {
         public PersonControl()
         {
             InitializeComponent();
+            PersonsList = new List<Person>();
         }
 
         public string FileName
@@ -68,6 +70,22 @@ namespace berezin_lab_1
 
         bool error_state = false;
 
+        public bool Result
+        {
+            set
+            {
+                if (value == true)
+                {
+                    ErrorBorder.Visibility = Visibility.Visible;
+                    ErrorBorder.BorderBrush = Brushes.Green;
+                }
+                else
+                {
+                    ErrorState = true;
+                }
+            }
+        }
+
         public bool ErrorState
         {
             get
@@ -80,7 +98,7 @@ namespace berezin_lab_1
                 if (error_state == true)
                 {
                     ErrorBorder.Visibility = Visibility.Visible;
-                    ErrorBorder.BorderBrush = Brushes.Green;
+                    ErrorBorder.BorderBrush = Brushes.Red;
                 }
                 else
                 {
@@ -95,10 +113,31 @@ namespace berezin_lab_1
             set;
         }
 
+        double detected_num = 0;
         public double DetectedNum
+        {
+            get
+            {
+                return detected_num;
+            }
+            set
+            {
+                detected_num = value;
+                OnPropertyChanged("DetectedNum");
+            }
+        }
+
+        public  ErrorResult ErrorResult
         {
             get;
             set;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

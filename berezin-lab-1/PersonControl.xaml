@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Border Name ="ErrorBorder" BorderBrush="Red"
+        <Border Name ="ErrorBorder" BorderBrush="Transparent"
                 BorderThickness="3"
                 Visibility="Visible"
                 >
@@ -25,8 +25,8 @@
                      Visibility="Collapsed"/>
                 <WrapPanel>
                     <Image Name="PersonImage"
-               VerticalAlignment="Top"
-                       Source="{Binding Path = Source}">
+                           VerticalAlignment="Top"
+                           Source="{Binding Path = Source}">
 
                     </Image>
                     <StackPanel >

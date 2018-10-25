@@ -48,6 +48,7 @@
                  Grid.Column="1"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 SelectionChanged="SelectedPersonControlEvent"
                  >
         </ListBox>
     </Grid>
