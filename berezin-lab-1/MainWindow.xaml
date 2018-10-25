@@ -8,7 +8,7 @@
         Title="MainWindow" Height="670" Width="800">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open"
-                        Executed="OpenImage"
+                        Executed="OpenImages"
                         CanExecute="CanOpenImage"></CommandBinding>
         <CommandBinding Command="ApplicationCommands.Save"
                         Executed="SaveImage"
@@ -18,8 +18,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="297*"></ColumnDefinition>
+            <ColumnDefinition Width="80*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2">
             <MenuItem Header="File">
                 <MenuItem Header="Open"
@@ -28,20 +31,24 @@
                           Command="ApplicationCommands.Save"></MenuItem>
             </MenuItem>
             <MenuItem Header="Detect"
-                      Click="DetectFace"></MenuItem>
+                      Click="DetectFaces"></MenuItem>
         </Menu>
         <Viewbox MinHeight="600" Grid.Column="0" Grid.Row="1">
             <Grid Name ="cs" >
                 <Image Name="ImageObject"
-                     VerticalAlignment="Top"></Image>
+                       VerticalAlignment="Top"
+                       Source="{Binding ElementName=PersonListBox, Path=SelectedItem.Source, Mode=OneWay}"></Image>
                 <Canvas Name="ObjectField" >
 
                 </Canvas>
             </Grid>
         </Viewbox>
-        <ProgressBar Grid.Row="2" 
-                     MinHeight="10"
-                         Width="Auto"
-                         IsIndeterminate="True"/>
+        <ListBox Name="PersonListBox"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 >
+        </ListBox>
     </Grid>
 </Window>
