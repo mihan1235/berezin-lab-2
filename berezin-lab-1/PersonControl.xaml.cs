@@ -33,6 +33,11 @@ namespace berezin_lab_1
             set;
         }
 
+        public string FileNameShort{
+            get;
+            set;
+        }
+
         public BitmapImage ImageBitmap
         {
             get;

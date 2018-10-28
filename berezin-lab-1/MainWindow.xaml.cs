@@ -101,7 +101,7 @@ namespace berezin_lab_1
                         obj.ImageBitmap = img;
                         obj.Source = img;
                         obj.FileName = name;
-                        
+                        obj.FileNameShort = System.IO.Path.GetFileName(name);
                         persons_list.Add(obj);
                     }
                     //ImageObject.Source = img;
@@ -129,9 +129,6 @@ namespace berezin_lab_1
                 return binaryReader.ReadBytes((int)fileStream.Length);
             }
         }
-
-
-        
 
         // Replace <Subscription Key> with your valid subscription key.
         const string subscriptionKey = "1d95ae676a35431ebd21d1c70ca22eb4";

@@ -21,9 +21,10 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="297*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="80*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Menu Grid.ColumnSpan="2">
+        <Menu Grid.ColumnSpan="3">
             <MenuItem Header="File">
                 <MenuItem Header="Open"
                           Command="ApplicationCommands.Open"></MenuItem>
@@ -43,9 +44,12 @@
                 </Canvas>
             </Grid>
         </Viewbox>
+        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" 
+                      HorizontalAlignment="Center" Width="5"
+                      Grid.RowSpan="2"></GridSplitter>
         <ListBox Name="PersonListBox"
                  Grid.Row="1"
-                 Grid.Column="1"
+                 Grid.Column="2"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  SelectionChanged="SelectedPersonControlEvent"

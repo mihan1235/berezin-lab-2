@@ -32,7 +32,7 @@
                     <StackPanel >
                         <DockPanel>
                             <TextBlock Text="Image name: "></TextBlock>
-                            <TextBlock Text="{Binding Path=FileName}"></TextBlock>
+                            <TextBlock Text="{Binding Path=FileNameShort}"></TextBlock>
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Detected: "></TextBlock>
