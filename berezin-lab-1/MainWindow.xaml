@@ -14,7 +14,7 @@
                         Executed="SaveImage"
                         CanExecute="CanSaveImage"></CommandBinding>
         <CommandBinding Command="local:CustomCommands.DetectFaces"
-                        Executed="DetectFaces"
+                        Executed="DetectFacesAsync"
                         CanExecute="CanDetectFaces"></CommandBinding>
     </Window.CommandBindings>
     <Grid ShowGridLines="True">

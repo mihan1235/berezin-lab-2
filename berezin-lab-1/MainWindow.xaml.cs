@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 namespace berezin_lab_1
 {
     using System.Collections.ObjectModel;
+    using System.Threading;
     using static Json;
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -173,6 +174,22 @@ namespace berezin_lab_1
                     ObjectField.Children.Add(label);
                 }
             }
+            if (obj.ErrorState == true)
+            {
+                StackPanel stack = new StackPanel();
+                void AddLabelTostack(string text)
+                { 
+                    Label label = new Label();
+                    label.Content = text;
+                    label.Foreground = Brushes.Yellow;
+                    stack.Children.Add(label);
+                }
+                AddLabelTostack("Code: " + obj.ErrorResult.error.code);
+                AddLabelTostack("Message: " + obj.ErrorResult.error.message);
+                Canvas.SetRight(stack, 2);
+                Canvas.SetTop(stack, 2);
+                ObjectField.Children.Add(stack);
+            }
         }
 
         private void SelectedPersonControlEvent(object sender, RoutedEventArgs e)
@@ -184,51 +201,64 @@ namespace berezin_lab_1
             }
         }
 
-        private void DetectFaces(object sender, ExecutedRoutedEventArgs e)
+        async Task<string> GetJsonAsync(string image_name)
         {
+            HttpClient client = new HttpClient();
+
+            // Request headers.
+            client.DefaultRequestHeaders.Add(
+                "Ocp-Apim-Subscription-Key", subscriptionKey);
+
+            // Request parameters. A third optional parameter is "details".
+            string requestParameters = "returnFaceId=true&returnFaceLandmarks=false" +
+                "&returnFaceAttributes=age,gender";
+
+            // Assemble the URI for the REST API Call.
+            string uri = uriBase + "?" + requestParameters;
+
+            HttpResponseMessage response;
+
+            // Request body. Posts a locally stored JPEG image.
+            byte[] byteData = GetImageAsByteArray(image_name);
+
+            using (ByteArrayContent content = new ByteArrayContent(byteData))
+            {
+                // This example uses content type "application/octet-stream".
+                // The other content types you can use are "application/json"
+                // and "multipart/form-data".
+                content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/octet-stream");
+
+                // Execute the REST API call.
+                response = await client.PostAsync(uri, content);
+
+                // Get the JSON response.
+                string contentString = await response.Content.ReadAsStringAsync();
+                return contentString;
+            }
+        }
+
+        private  void DetectFacesAsync(object sender, ExecutedRoutedEventArgs e)
+        {
+            //List<Task> task_list = new List<Task>();
+            var uis = TaskScheduler.FromCurrentSynchronizationContext();
             foreach (var person_control in persons_list)
             {
                 person_control.ProgressBar.Visibility = Visibility.Visible;
-                HttpClient client = new HttpClient();
-
-                // Request headers.
-                client.DefaultRequestHeaders.Add(
-                    "Ocp-Apim-Subscription-Key", subscriptionKey);
-
-                // Request parameters. A third optional parameter is "details".
-                string requestParameters = "returnFaceId=true&returnFaceLandmarks=false" +
-                    "&returnFaceAttributes=age,gender";
-
-                // Assemble the URI for the REST API Call.
-                string uri = uriBase + "?" + requestParameters;
-
-                HttpResponseMessage response;
-
-                // Request body. Posts a locally stored JPEG image.
-                byte[] byteData = GetImageAsByteArray(person_control.FileName);
-
-                using (ByteArrayContent content = new ByteArrayContent(byteData))
+                var task = Task.Factory.StartNew(() =>
                 {
-                    // This example uses content type "application/octet-stream".
-                    // The other content types you can use are "application/json"
-                    // and "multipart/form-data".
-                    content.Headers.ContentType =
-                        new MediaTypeHeaderValue("application/octet-stream");
-
-                    // Execute the REST API call.
-                    response = client.PostAsync(uri, content).Result;
-
-                    // Get the JSON response.
-                    string contentString = response.Content.ReadAsStringAsync().Result;
+                    string contentString = GetJsonAsync(person_control.FileName).Result;
                     person_control.JsonFile = contentString;
                     // Display the JSON response.
                     // MessageBox.Show(JsonPrettyPrint(contentString));
                     object obj = ConvertToPersons(contentString);
-                    person_control.ProgressBar.Visibility = Visibility.Collapsed;
                     if (obj is ErrorResult)
                     {
-                        //MessageBox.Show(((ErrorResult)obj).ToString());
-                        person_control.ErrorState = true;
+                        Task.Factory.StartNew(() =>
+                        {
+                            person_control.ErrorState = true;
+                        }, CancellationToken.None, TaskCreationOptions.None, uis);
+                        
                         person_control.DetectedNum = 0;
                         person_control.ErrorResult = (ErrorResult)obj;
                     }
@@ -237,14 +267,23 @@ namespace berezin_lab_1
                         var PersonsList = (List<Person>)obj;
                         person_control.PersonsList = PersonsList;
                         person_control.DetectedNum = PersonsList.Count;
-                        person_control.Result = true;
+                        Task.Factory.StartNew(() =>
+                        {
+                            person_control.Result = true;
+                        }, CancellationToken.None, TaskCreationOptions.None, uis);
                     }
-                }
+                }).ContinueWith(t =>
+                {
+                    person_control.ProgressBar.Visibility = Visibility.Collapsed;
+                    if ((persons_list.IndexOf(person_control) == PersonListBox.SelectedIndex) &&
+                    (PersonListBox.SelectedIndex != -1))
+                    {
+                        DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
+                    }
+                }, CancellationToken.None, TaskContinuationOptions.None, uis);
+                
             }
-            if (PersonListBox.SelectedIndex != -1)
-            {
-                DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
-            }
+            //await Task.WhenAll(task_list);
         }
 
         private void CanDetectFaces(object sender, CanExecuteRoutedEventArgs e)
