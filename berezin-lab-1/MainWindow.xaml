@@ -13,6 +13,9 @@
         <CommandBinding Command="ApplicationCommands.Save"
                         Executed="SaveImage"
                         CanExecute="CanSaveImage"></CommandBinding>
+        <CommandBinding Command="local:CustomCommands.DetectFaces"
+                        Executed="DetectFaces"
+                        CanExecute="CanDetectFaces"></CommandBinding>
     </Window.CommandBindings>
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
@@ -32,7 +35,7 @@
                           Command="ApplicationCommands.Save"></MenuItem>
             </MenuItem>
             <MenuItem Header="Detect"
-                      Click="DetectFaces"></MenuItem>
+                      Command="local:CustomCommands.DetectFaces"></MenuItem>
         </Menu>
         <Viewbox MinHeight="600" Grid.Column="0" Grid.Row="1">
             <Grid Name ="cs" >
