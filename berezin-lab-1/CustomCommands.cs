@@ -11,6 +11,7 @@ namespace berezin_lab_1
     {
         // Создание команды AddCustomProgrammer
         private static RoutedUICommand _DetectFaces;
+        private static RoutedUICommand _Cancel;
 
         static CustomCommands()
         {
@@ -19,11 +20,17 @@ namespace berezin_lab_1
             //inputs.Add(new KeyGesture(Key.R, ModifierKeys.Control, "Ctrl + R"));
             //requery = new RoutedUICommand("Requery", "Requery", typeof(CustomCommands), inputs);
             _DetectFaces = new RoutedUICommand("DetectFaces", "DetectFaces", typeof(CustomCommands));
+            _Cancel = new RoutedUICommand("Cancel", "Cancel", typeof(CustomCommands));
         }
 
         public static RoutedUICommand DetectFaces
         {
             get { return _DetectFaces; }
+        }
+
+        public static RoutedUICommand Cancel
+        {
+            get { return _Cancel; }
         }
     }
 }

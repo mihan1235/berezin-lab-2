@@ -16,6 +16,9 @@
         <CommandBinding Command="local:CustomCommands.DetectFaces"
                         Executed="DetectFacesAsync"
                         CanExecute="CanDetectFaces"></CommandBinding>
+        <CommandBinding Command="local:CustomCommands.Cancel"
+                        Executed="CancelTasks"
+                        CanExecute="CanCancelTasks"></CommandBinding>
     </Window.CommandBindings>
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
@@ -36,6 +39,9 @@
             </MenuItem>
             <MenuItem Header="Detect"
                       Command="local:CustomCommands.DetectFaces"></MenuItem>
+            <MenuItem Header="Cancel"
+                      Command="local:CustomCommands.Cancel">
+            </MenuItem>
         </Menu>
         <Viewbox MinHeight="600" Grid.Column="0" Grid.Row="1">
             <Grid Name ="cs" >
