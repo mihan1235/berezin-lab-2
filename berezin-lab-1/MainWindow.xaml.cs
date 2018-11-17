@@ -240,29 +240,27 @@ namespace berezin_lab_1
 
         CancellationTokenSource TokenSource = new CancellationTokenSource();
 
-        private  void DetectFacesAsync(object sender, ExecutedRoutedEventArgs e)
+        private void DetectFacesAsync(object sender, ExecutedRoutedEventArgs e)
         {
             //List<Task> task_list = new List<Task>();
             var context = TaskScheduler.FromCurrentSynchronizationContext();
             foreach (var person_control in persons_list)
             {
                 CancellationToken token = TokenSource.Token;
-                person_control.ProgressBar.Visibility = Visibility.Visible;
-                var task = Task.Factory.StartNew(() =>
+
+                var task = Task.Factory.StartNew(async () =>
                 {
                     void check_token_cancel()
                     {
                         if (token.IsCancellationRequested)
                         {
-                            Task.Factory.StartNew(() =>
-                            {
-                                person_control.ProgressBar.Visibility = Visibility.Collapsed;
-                            }, CancellationToken.None, TaskCreationOptions.None, context);
+                            person_control.ProgressBar.Visibility = Visibility.Collapsed;
                             token.ThrowIfCancellationRequested();
                         }
                     }
+                    person_control.ProgressBar.Visibility = Visibility.Visible;
                     check_token_cancel();
-                    string contentString = GetJsonAsync(person_control.FileName).Result;
+                    string contentString = await GetJsonAsync(person_control.FileName);
                     check_token_cancel();
                     person_control.JsonFile = contentString;
                     // Display the JSON response.
@@ -272,11 +270,7 @@ namespace berezin_lab_1
                     check_token_cancel();
                     if (obj is ErrorResult)
                     {
-                        Task.Factory.StartNew(() =>
-                        {
-                            person_control.ErrorState = true;
-                        }, CancellationToken.None, TaskCreationOptions.None, context);
-                        
+                        person_control.ErrorState = true;
                         person_control.DetectedNum = 0;
                         person_control.ErrorResult = (ErrorResult)obj;
                     }
@@ -285,35 +279,16 @@ namespace berezin_lab_1
                         var PersonsList = (List<Person>)obj;
                         person_control.PersonsList = PersonsList;
                         person_control.DetectedNum = PersonsList.Count;
-                        Task.Factory.StartNew(() =>
-                        {
-                            person_control.Result = true;
-                        }, CancellationToken.None, TaskCreationOptions.None, context);
+                        person_control.Result = true;
                     }
-                },token).ContinueWith(t =>
-                {
-                    void check_token_cancel()
-                    {
-                        if (token.IsCancellationRequested)
-                        {
-                            Task.Factory.StartNew(() =>
-                            {
-                                person_control.ProgressBar.Visibility = Visibility.Collapsed;
-                            }, CancellationToken.None, TaskCreationOptions.None, context);
-                            token.ThrowIfCancellationRequested();
-                        }
-                    }
-                    check_token_cancel();
                     person_control.ProgressBar.Visibility = Visibility.Collapsed;
                     if ((persons_list.IndexOf(person_control) == PersonListBox.SelectedIndex) &&
                     (PersonListBox.SelectedIndex != -1))
                     {
                         DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
                     }
-                }, token, TaskContinuationOptions.None, context);
-                
+                }, token, TaskCreationOptions.None, context);               
             }
-            //await Task.WhenAll(task_list);
         }
 
         private void CanDetectFaces(object sender, CanExecuteRoutedEventArgs e)
