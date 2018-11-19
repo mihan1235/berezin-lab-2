@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace berezin_lab_1
+namespace berezin_lab_2
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

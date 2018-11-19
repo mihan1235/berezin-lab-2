@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace berezin_lab_1
+namespace berezin_lab_2
 {
     class CustomCommands
     {

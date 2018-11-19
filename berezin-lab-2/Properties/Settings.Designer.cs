@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace berezin_lab_1.Properties
+namespace berezin_lab_2.Properties
 {
 
 

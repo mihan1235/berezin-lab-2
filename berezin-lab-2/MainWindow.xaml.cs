@@ -18,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 
-namespace berezin_lab_1
+namespace berezin_lab_2
 {
     using System.Collections.ObjectModel;
     using System.Threading;

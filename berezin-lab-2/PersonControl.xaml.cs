@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace berezin_lab_1
+namespace berezin_lab_2
 {
     /// <summary>
     /// Логика взаимодействия для PersonControl.xaml

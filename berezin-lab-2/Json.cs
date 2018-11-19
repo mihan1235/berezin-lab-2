@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace berezin_lab_1
+namespace berezin_lab_2
 {
     public struct FaceRectangle
     {
