@@ -99,22 +99,6 @@ namespace berezin_lab_2
                     ObjectField1.Children.Add(label);
                 }
             }
-            if (ErrorState == true)
-            {
-                StackPanel stack = new StackPanel();
-                void AddLabelTostack(string text)
-                {
-                    Label label = new Label();
-                    label.Content = text;
-                    label.Foreground = Brushes.Yellow;
-                    stack.Children.Add(label);
-                }
-                AddLabelTostack("Code: " + ErrorResult.error.code);
-                AddLabelTostack("Message: " + ErrorResult.error.message);
-                Canvas.SetRight(stack, 2);
-                Canvas.SetTop(stack, 2);
-                ObjectField1.Children.Add(stack);
-            }
         }
 
         bool error_state = false;
@@ -155,10 +139,14 @@ namespace berezin_lab_2
                 {
                     ErrorBorder.Visibility = Visibility.Visible;
                     ErrorBorder.BorderBrush = Brushes.Red;
+                    ErrorStack.Visibility = Visibility.Visible;
+                    ErrorCodeText.Text = ErrorResult.error.code;
+                    ErrorMessageText.Text = ErrorResult.error.message;
                 }
                 else
                 {
                     ErrorBorder.Visibility = Visibility.Collapsed;
+                    ErrorStack.Visibility = Visibility.Collapsed;
                 }
             }
         }

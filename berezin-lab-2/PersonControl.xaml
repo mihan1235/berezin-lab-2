@@ -44,6 +44,17 @@
                             <TextBlock Text="Detected: "></TextBlock>
                             <TextBlock Text="{Binding Path=DetectedNum}"></TextBlock>
                         </DockPanel>
+                        <StackPanel Name="ErrorStack"
+                                    Visibility="Collapsed">
+                            <DockPanel>
+                                <TextBlock Text="Code: "></TextBlock>
+                                <TextBlock Name = "ErrorCodeText"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Message: "></TextBlock>
+                                <TextBlock Name = "ErrorMessageText"></TextBlock>
+                            </DockPanel>
+                        </StackPanel>
                     </StackPanel>
                 </WrapPanel>
 

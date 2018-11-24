@@ -146,22 +146,6 @@ namespace berezin_lab_2
                     ObjectField.Children.Add(label);
                 }
             }
-            if (obj.ErrorState == true)
-            {
-                StackPanel stack = new StackPanel();
-                void AddLabelTostack(string text)
-                { 
-                    Label label = new Label();
-                    label.Content = text;
-                    label.Foreground = Brushes.Yellow;
-                    stack.Children.Add(label);
-                }
-                AddLabelTostack("Code: " + obj.ErrorResult.error.code);
-                AddLabelTostack("Message: " + obj.ErrorResult.error.message);
-                Canvas.SetRight(stack, 2);
-                Canvas.SetTop(stack, 2);
-                ObjectField.Children.Add(stack);
-            }
         }
 
         private void SelectedPersonControlEvent(object sender, RoutedEventArgs e)
