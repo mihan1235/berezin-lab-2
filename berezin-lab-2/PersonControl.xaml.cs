@@ -41,7 +41,7 @@ namespace berezin_lab_2
         public BitmapImage ImageBitmap
         {
             get;
-            set;
+            private set;
         }
 
         public double ResizeFactor
@@ -52,18 +52,14 @@ namespace berezin_lab_2
                 return (dpi > 0) ? 96 / dpi : 1;
             }
         }
-
-        ImageSource source;
-        public ImageSource Source
-        {
+        public ImageSource Source {
             get
             {
-                return source;
+                return ImageBitmap;
             }
             set
             {
-                source = value;
-                //PersonImage.Source = value;
+                ImageBitmap = (BitmapImage)value;
             }
         }
 

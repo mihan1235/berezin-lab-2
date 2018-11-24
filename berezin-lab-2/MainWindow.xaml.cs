@@ -16,12 +16,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace berezin_lab_2
 {
-    using System.Collections.ObjectModel;
-    using System.Threading;
+    
+    using static BitmapImageConverter;
     using static Json;
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -75,8 +76,6 @@ namespace berezin_lab_2
             e.CanExecute = true;
         }
 
-        //string FileName;
-        //BitmapImage img;
         ObservableCollection<PersonControl> persons_list = new ObservableCollection<PersonControl>();
 
         private void OpenImages(object sender, ExecutedRoutedEventArgs e)
@@ -98,15 +97,13 @@ namespace berezin_lab_2
                     foreach (var name in file_names)
                     {
                         PersonControl obj = new PersonControl();
-                        BitmapImage img = new BitmapImage(new Uri(name, UriKind.RelativeOrAbsolute));
-                        obj.ImageBitmap = img;
+                        //BitmapImage img = new BitmapImage(new Uri(name, UriKind.RelativeOrAbsolute));
+                        BitmapImage img = ByteArrayToImage(GetImageAsByteArray(name));
                         obj.Source = img;
                         obj.FileName = name;
                         obj.FileNameShort = System.IO.Path.GetFileName(name);
                         persons_list.Add(obj);
                     }
-                    //ImageObject.Source = img;
-                    //ImageObject.Source = null;
                     ObjectField.Children.Clear();
                     PersonListBox.ItemsSource = persons_list;
                 }
@@ -116,34 +113,6 @@ namespace berezin_lab_2
                 }
             }
         }
-        /// <summary>
-        /// Returns the contents of the specified file as a byte array.
-        /// </summary>
-        /// <param name="imageFilePath">The image file to read.</param>
-        /// <returns>The byte array of the image data.</returns>
-        static byte[] GetImageAsByteArray(string imageFilePath)
-        {
-            using (FileStream fileStream =
-                new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
-            {
-                BinaryReader binaryReader = new BinaryReader(fileStream);
-                return binaryReader.ReadBytes((int)fileStream.Length);
-            }
-        }
-
-        // Replace <Subscription Key> with your valid subscription key.
-        const string subscriptionKey = "1d95ae676a35431ebd21d1c70ca22eb4";
-
-        // NOTE: You must use the same region in your REST call as you used to
-        // obtain your subscription keys. For example, if you obtained your
-        // subscription keys from westus, replace "westcentralus" in the URL
-        // below with "westus".
-        //
-        // Free trial subscription keys are generated in the westcentralus region.
-        // If you use a free trial subscription key, you shouldn't need to change
-        // this region.
-        const string uriBase =
-            "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect";
 
         private void DrawInfoOnObjectField(PersonControl obj)
         {
@@ -201,43 +170,6 @@ namespace berezin_lab_2
             }
         }
 
-        async Task<string> GetJsonAsync(string image_name)
-        {
-            HttpClient client = new HttpClient();
-
-            // Request headers.
-            client.DefaultRequestHeaders.Add(
-                "Ocp-Apim-Subscription-Key", subscriptionKey);
-
-            // Request parameters. A third optional parameter is "details".
-            string requestParameters = "returnFaceId=true&returnFaceLandmarks=false" +
-                "&returnFaceAttributes=age,gender";
-
-            // Assemble the URI for the REST API Call.
-            string uri = uriBase + "?" + requestParameters;
-
-            HttpResponseMessage response;
-
-            // Request body. Posts a locally stored JPEG image.
-            byte[] byteData = GetImageAsByteArray(image_name);
-
-            using (ByteArrayContent content = new ByteArrayContent(byteData))
-            {
-                // This example uses content type "application/octet-stream".
-                // The other content types you can use are "application/json"
-                // and "multipart/form-data".
-                content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/octet-stream");
-
-                // Execute the REST API call.
-                response = await client.PostAsync(uri, content);
-
-                // Get the JSON response.
-                string contentString = await response.Content.ReadAsStringAsync();
-                return contentString;
-            }
-        }
-
         CancellationTokenSource TokenSource = new CancellationTokenSource();
 
         private void DetectFacesAsync(object sender, ExecutedRoutedEventArgs e)
@@ -260,7 +192,7 @@ namespace berezin_lab_2
                     }
                     person_control.ProgressBar.Visibility = Visibility.Visible;
                     check_token_cancel();
-                    string contentString = await GetJsonAsync(person_control.FileName);
+                    string contentString = await GetJsonAsync(person_control.ImageBitmap);
                     check_token_cancel();
                     person_control.JsonFile = contentString;
                     // Display the JSON response.
