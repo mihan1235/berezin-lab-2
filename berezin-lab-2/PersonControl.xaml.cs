@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -63,27 +64,81 @@ namespace berezin_lab_2
             }
         }
 
-        public String JsonFile
+        public string JsonFile
         {
             get;
             set;
         }
 
-        bool error_state = false;
+        public void DrawOnImage()
+        {
+            ObjectField1.Children.Clear();
+            if (PersonsList.Count != 0)
+            {
+                double resizeFactor = ResizeFactor;
 
+                foreach (var person in PersonsList)
+                {
+                    Rectangle rect = new Rectangle();
+                    rect.Stroke = new SolidColorBrush(Colors.Yellow);
+                    rect.Fill = new SolidColorBrush(Colors.Transparent);
+                    rect.Width = person.faceRectangle.width * resizeFactor;
+                    rect.Height = person.faceRectangle.height * resizeFactor;
+                    Canvas.SetLeft(rect, person.faceRectangle.left * resizeFactor);
+                    Canvas.SetTop(rect, person.faceRectangle.top * resizeFactor);
+                    ObjectField1.Children.Add(rect);
+
+                    Label label = new Label();
+                    label.Content = "age: " + person.faceAttributes.age.ToString() +
+                        "\ngender: " + person.faceAttributes.gender;
+                    Canvas.SetLeft(label, person.faceRectangle.left * resizeFactor);
+                    Canvas.SetTop(label, person.faceRectangle.top * resizeFactor +
+                        person.faceRectangle.height * resizeFactor);
+                    //label.Background = Brushes.White;
+                    label.Foreground = Brushes.Yellow;
+                    ObjectField1.Children.Add(label);
+                }
+            }
+            if (ErrorState == true)
+            {
+                StackPanel stack = new StackPanel();
+                void AddLabelTostack(string text)
+                {
+                    Label label = new Label();
+                    label.Content = text;
+                    label.Foreground = Brushes.Yellow;
+                    stack.Children.Add(label);
+                }
+                AddLabelTostack("Code: " + ErrorResult.error.code);
+                AddLabelTostack("Message: " + ErrorResult.error.message);
+                Canvas.SetRight(stack, 2);
+                Canvas.SetTop(stack, 2);
+                ObjectField1.Children.Add(stack);
+            }
+        }
+
+        bool error_state = false;
+        bool result = false;
         public bool Result
         {
+            get
+            {
+                return result;
+            }
             set
             {
                 if (value == true)
                 {
-                    ErrorBorder.Visibility = Visibility.Visible;
-                    ErrorBorder.BorderBrush = Brushes.Green;
+                    //ErrorBorder.Visibility = Visibility.Visible;
+                    //ErrorBorder.BorderBrush = Brushes.Green;
+                    DetectedDock.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     ErrorState = true;
+                    DetectedDock.Visibility = Visibility.Collapsed;
                 }
+                result = value;
             }
         }
 

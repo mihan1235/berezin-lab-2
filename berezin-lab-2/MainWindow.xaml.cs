@@ -24,6 +24,8 @@ namespace berezin_lab_2
     
     using static BitmapImageConverter;
     using static Json;
+
+    
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
@@ -116,6 +118,7 @@ namespace berezin_lab_2
 
         private void DrawInfoOnObjectField(PersonControl obj)
         {
+            
             ObjectField.Children.Clear();
             if (obj.PersonsList.Count != 0)
             {
@@ -203,7 +206,6 @@ namespace berezin_lab_2
                     if (obj is ErrorResult)
                     {
                         person_control.ErrorState = true;
-                        person_control.DetectedNum = 0;
                         person_control.ErrorResult = (ErrorResult)obj;
                     }
                     if (obj is List<Person>)
@@ -219,6 +221,7 @@ namespace berezin_lab_2
                     {
                         DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
                     }
+                    person_control.DrawOnImage();
                 }, token, TaskCreationOptions.None, context);               
             }
         }
@@ -239,6 +242,34 @@ namespace berezin_lab_2
         private void CanCancelTasks(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void DetectNewOrError(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void CanDetectNewOrError(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (persons_list.Count != 0)
+            {
+                e.CanExecute = true;
+            }
+        }
+
+        private void ClearDataBase(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void CanClearDataBase(object sender, CanExecuteRoutedEventArgs e)
+        {
+
+        }
+
+        private void DO_remove_obj(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

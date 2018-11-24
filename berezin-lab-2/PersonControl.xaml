@@ -16,7 +16,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                
+
                 <ProgressBar Name="ProgressBar"
                     Grid.Row="1"
                      MinHeight="10"
@@ -24,23 +24,29 @@
                      IsIndeterminate="True"
                      Visibility="Collapsed"/>
                 <WrapPanel>
-                    <Image Name="PersonImage"
+                    <Viewbox>
+                        <Grid Name ="cs1" >
+                            <Image Name="PersonImage"
                            VerticalAlignment="Top"
                            Source="{Binding Path = Source}">
-
-                    </Image>
+                            </Image>
+                            <Canvas Name="ObjectField1" >
+                            </Canvas>
+                        </Grid>
+                    </Viewbox>
                     <StackPanel >
                         <DockPanel>
                             <TextBlock Text="Image name: "></TextBlock>
                             <TextBlock Text="{Binding Path=FileNameShort}"></TextBlock>
                         </DockPanel>
-                        <DockPanel>
+                        <DockPanel Name="DetectedDock"
+                                   Visibility="Collapsed">
                             <TextBlock Text="Detected: "></TextBlock>
                             <TextBlock Text="{Binding Path=DetectedNum}"></TextBlock>
                         </DockPanel>
                     </StackPanel>
                 </WrapPanel>
-                
+
             </Grid>
         </Border>
     </Grid>

@@ -19,8 +19,14 @@
         <CommandBinding Command="local:CustomCommands.Cancel"
                         Executed="CancelTasks"
                         CanExecute="CanCancelTasks"></CommandBinding>
+        <CommandBinding Command="local:CustomCommands.DetectNewOrError"
+                        Executed="DetectNewOrError"
+                        CanExecute="CanDetectNewOrError"></CommandBinding>
+        <CommandBinding Command="local:CustomCommands.ClearDataBase"
+                        Executed="ClearDataBase"
+                        CanExecute="CanClearDataBase"></CommandBinding>
     </Window.CommandBindings>
-    <Grid ShowGridLines="True">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -34,13 +40,21 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open"
                           Command="ApplicationCommands.Open"></MenuItem>
-                <MenuItem Header="Save"
+                <MenuItem Header="Save selected image"
                           Command="ApplicationCommands.Save"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Detect"
-                      Command="local:CustomCommands.DetectFaces"></MenuItem>
-            <MenuItem Header="Cancel"
+            <MenuItem Header="Detect images">
+                <MenuItem Header="Detect all"
+                          Command="local:CustomCommands.DetectFaces"></MenuItem>
+                <MenuItem Header="Detect not saved images"
+                          Command="local:CustomCommands.DetectNewOrError"></MenuItem>
+                <MenuItem Header="Cancel detection process"
                       Command="local:CustomCommands.Cancel">
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="DataBase">
+                <MenuItem Header="Clear"
+                          Command="local:CustomCommands.ClearDataBase"></MenuItem>
             </MenuItem>
         </Menu>
         <Viewbox MinHeight="600" Grid.Column="0" Grid.Row="1">
@@ -63,6 +77,11 @@
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  SelectionChanged="SelectedPersonControlEvent"
                  >
+            <ListBox.ContextMenu>
+                <ContextMenu >
+                    <MenuItem Header="Remove" Click="DO_remove_obj"></MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </Grid>
 </Window>
