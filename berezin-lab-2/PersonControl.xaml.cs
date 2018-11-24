@@ -39,6 +39,22 @@ namespace berezin_lab_2
             set;
         }
 
+        byte[] _ImageByteArray;
+
+        public byte[] ImageByteArray
+        {
+            get
+            {
+                return _ImageByteArray;
+            }
+            set
+            {
+                _ImageByteArray = value;
+                ImageBitmap = BitmapImageConverter.ByteArrayToImage(_ImageByteArray);
+                Source = ImageBitmap;
+            }
+        }
+
         public BitmapImage ImageBitmap
         {
             get;
@@ -54,14 +70,8 @@ namespace berezin_lab_2
             }
         }
         public ImageSource Source {
-            get
-            {
-                return ImageBitmap;
-            }
-            set
-            {
-                ImageBitmap = (BitmapImage)value;
-            }
+            get;
+            private set;
         }
 
         public string JsonFile
@@ -142,6 +152,7 @@ namespace berezin_lab_2
                     ErrorStack.Visibility = Visibility.Visible;
                     ErrorCodeText.Text = ErrorResult.error.code;
                     ErrorMessageText.Text = ErrorResult.error.message;
+
                 }
                 else
                 {

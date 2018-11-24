@@ -100,8 +100,9 @@ namespace berezin_lab_2
                     {
                         PersonControl obj = new PersonControl();
                         //BitmapImage img = new BitmapImage(new Uri(name, UriKind.RelativeOrAbsolute));
-                        BitmapImage img = ByteArrayToImage(GetImageAsByteArray(name));
-                        obj.Source = img;
+                        //BitmapImage img = ByteArrayToImage(GetImageAsByteArray(name));
+                        //obj.Source = img;
+                        obj.ImageByteArray = GetImageAsByteArray(name);
                         obj.FileName = name;
                         obj.FileNameShort = System.IO.Path.GetFileName(name);
                         persons_list.Add(obj);
@@ -179,18 +180,19 @@ namespace berezin_lab_2
                     }
                     person_control.ProgressBar.Visibility = Visibility.Visible;
                     check_token_cancel();
-                    string contentString = await GetJsonAsync(person_control.ImageBitmap);
+                    string contentString = await GetJsonAsync(person_control.ImageByteArray);
                     check_token_cancel();
                     person_control.JsonFile = contentString;
                     // Display the JSON response.
-                    // MessageBox.Show(JsonPrettyPrint(contentString));
+                    //MessageBox.Show(JsonPrettyPrint(contentString));
                     check_token_cancel();
                     object obj = ConvertToPersons(contentString);
                     check_token_cancel();
                     if (obj is ErrorResult)
                     {
+                        var error = (ErrorResult)obj;
+                        person_control.ErrorResult = error;
                         person_control.ErrorState = true;
-                        person_control.ErrorResult = (ErrorResult)obj;
                     }
                     if (obj is List<Person>)
                     {

@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace berezin_lab_2
 {
-    public struct FaceRectangle
+    public class FaceRectangle
     {
         public double top;
         public double left;
@@ -28,7 +28,7 @@ namespace berezin_lab_2
         }
     }
 
-    public struct FaceAttributes
+    public class FaceAttributes
     {
         public string gender;
         public double age;
@@ -39,13 +39,13 @@ namespace berezin_lab_2
                 + " age: [" + age.ToString() + "]\n";
         }
     }
-    public struct Error
+    public class Error
     {
         public string code;
         public string message;
     }
 
-    public struct ErrorResult
+    public class ErrorResult
     {
         public Error error;
         public override string ToString()
@@ -56,7 +56,7 @@ namespace berezin_lab_2
         }
     }
 
-    public struct Person
+    public class Person
     {
         public string faceId;
         public FaceRectangle faceRectangle;
@@ -174,7 +174,7 @@ namespace berezin_lab_2
         const string uriBase =
             "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect";
 
-        static public async Task<string> GetJsonAsync(BitmapImage image)
+        static public async Task<string> GetJsonAsync(byte[] byteData)
         {
             HttpClient client = new HttpClient();
 
@@ -192,7 +192,7 @@ namespace berezin_lab_2
             HttpResponseMessage response;
 
             // Request body. Posts a locally stored JPEG image.
-            byte[] byteData = BitmapImageConverter.ImageToByteArray(image);
+            //byte[] byteData = BitmapImageConverter.ImageToByteArray(image);
 
             using (ByteArrayContent content = new ByteArrayContent(byteData))
             {
