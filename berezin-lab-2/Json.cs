@@ -12,63 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace berezin_lab_2
 {
-    public class FaceRectangle
-    {
-        public double top;
-        public double left;
-        public double width;
-        public double height;
-        public override string ToString()
-        {
-            return "faceRectangle\n " +
-                " top: [" + top.ToString() + "]\n"
-                + " left: [" + left.ToString() + "]\n"
-                + " width: [" + width.ToString() + "]\n"
-                + " height: [" + height.ToString() + "]\n";
-        }
-    }
-
-    public class FaceAttributes
-    {
-        public string gender;
-        public double age;
-        public override string ToString()
-        {
-            return "faceAttributes\n"
-                + "gender: " + gender + "\n"
-                + " age: [" + age.ToString() + "]\n";
-        }
-    }
-    public class Error
-    {
-        public string code;
-        public string message;
-    }
-
-    public class ErrorResult
-    {
-        public Error error;
-        public override string ToString()
-        {
-            return "Error\n"
-                + "code: " + error.code + "\n"
-                + "message: " + error.message + "\n";
-        }
-    }
-
-    public class Person
-    {
-        public string faceId;
-        public FaceRectangle faceRectangle;
-        public FaceAttributes faceAttributes;
-        public override string ToString()
-        {
-            return "Person: \n"
-                + "faceId: "+faceId+"\n"
-                + faceRectangle.ToString()+ faceAttributes.ToString();
-        }
-    }
-
+    
     public class Json
     {
         /// <summary>

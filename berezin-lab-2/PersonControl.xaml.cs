@@ -194,5 +194,59 @@ namespace berezin_lab_2
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
+
+        public int? Id
+        {
+            get;
+            set;
+        } = null;
+
+
+        public PersonControlData Data
+        {
+            get
+            {
+                PersonControlData data = new PersonControlData();
+                data.DetectedNum = DetectedNum;
+                data.ErrorResult = ErrorResult;
+                data.FileName = FileName;
+                data.FileNameShort = FileNameShort;
+                data.ImageByteArray = ImageByteArray;
+                data.JsonFile = JsonFile;
+                data.PersonsList = PersonsList;
+                data.Result = Result;
+                //data.ErrorState = ErrorState;
+                return data;
+            }
+            set
+            {
+                DetectedNum = value.DetectedNum;
+                ErrorResult = value.ErrorResult;
+                FileName = value.FileName;
+                FileNameShort = value.FileNameShort;
+                ImageByteArray = value.ImageByteArray;
+                JsonFile = value.JsonFile;
+                PersonsList = value.PersonsList.ToList();
+                Result = value.Result;
+                //ErrorState = value.ErrorState;
+            }
+        }
+
+        public override string ToString()
+        {
+            string str = default(string);
+            str += "Detected num: \n" + DetectedNum + "\n";
+            if (ErrorResult != null)
+            {
+                str += ErrorResult.ToString() + "\n";
+            }
+            str += "FileName: \n" + FileName + "\n";
+            str += "FileNameShort: \n" + FileNameShort + "\n";
+            str += "JsonFile: \n" + FileNameShort + "\n";
+            str += "Result: \n" + Result + "\n";
+            str += "ErrorState: \n" + ErrorState + "\n";
+            str += "PersonsList: \n" + PersonsList.Count + "\n";
+            return str;
+        }
     }
 }

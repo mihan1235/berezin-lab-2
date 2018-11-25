@@ -31,9 +31,18 @@ namespace berezin_lab_2
     /// </summary>
     public partial class MainWindow : Window
     {
+        DataBase db = new DataBase();
         public MainWindow()
         {
             InitializeComponent();
+                foreach (PersonControlData obj in db.PersonControlDatas)
+                {
+                    PersonControl pc = new PersonControl();
+                    pc.Data = obj;
+                    persons_list.Add(pc);
+                    //MessageBox.Show(pc.ToString());
+                }
+            PersonListBox.ItemsSource = persons_list;
         }
 
         private void CanSaveImage(object sender, CanExecuteRoutedEventArgs e)
@@ -158,6 +167,7 @@ namespace berezin_lab_2
             }
         }
 
+        
         CancellationTokenSource TokenSource = new CancellationTokenSource();
 
         private void DetectFacesAsync(object sender, ExecutedRoutedEventArgs e)
@@ -192,7 +202,8 @@ namespace berezin_lab_2
                     {
                         var error = (ErrorResult)obj;
                         person_control.ErrorResult = error;
-                        person_control.ErrorState = true;
+                        //person_control.ErrorState = true;
+                        person_control.Result = false;
                     }
                     if (obj is List<Person>)
                     {
@@ -200,6 +211,14 @@ namespace berezin_lab_2
                         person_control.PersonsList = PersonsList;
                         person_control.DetectedNum = PersonsList.Count;
                         person_control.Result = true;
+                        using (DataBase db = new DataBase())
+                        {
+                            var data = person_control.Data;
+                            db.PersonControlDatas.Add(data);
+                            db.SaveChanges();
+                            person_control.Id=data.Id;
+                           
+                        }                        
                     }
                     person_control.ProgressBar.Visibility = Visibility.Collapsed;
                     if ((persons_list.IndexOf(person_control) == PersonListBox.SelectedIndex) &&
@@ -208,6 +227,17 @@ namespace berezin_lab_2
                         DrawInfoOnObjectField((PersonControl)PersonListBox.SelectedItem);
                     }
                     person_control.DrawOnImage();
+
+                    //using (DataBase db = new DataBase())
+                    //{
+                    //    var users = db.PersonControlDatas;
+                    //    String str = "Список объектов:";
+                    //    foreach (PersonControlData u in users)
+                    //    {
+                    //        str += u.Id + "\n";
+                    //    }
+                    //    MessageBox.Show(str);
+                    //}
                 }, token, TaskCreationOptions.None, context);               
             }
         }
