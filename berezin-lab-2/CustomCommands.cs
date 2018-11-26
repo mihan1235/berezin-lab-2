@@ -16,7 +16,6 @@ namespace berezin_lab_2
             //inputs.Add(new KeyGesture(Key.R, ModifierKeys.Control, "Ctrl + R"));
             //requery = new RoutedUICommand("Requery", "Requery", typeof(CustomCommands), inputs);
             DetectFaces = new RoutedUICommand("DetectFaces", "DetectFaces", typeof(CustomCommands));
-            DetectNewOrError = new RoutedUICommand("DetectNewOrError", "DetectNewOrError", typeof(CustomCommands));
             ClearDataBase = new RoutedUICommand("ClearDataBase", "ClearDataBase", typeof(CustomCommands)); ;
             Cancel = new RoutedUICommand("Cancel", "Cancel", typeof(CustomCommands));
         }

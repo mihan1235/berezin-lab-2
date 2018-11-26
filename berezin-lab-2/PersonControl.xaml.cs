@@ -220,6 +220,7 @@ namespace berezin_lab_2
             }
             set
             {
+                Id = value.Id;
                 DetectedNum = value.DetectedNum;
                 ErrorResult = value.ErrorResult;
                 FileName = value.FileName;

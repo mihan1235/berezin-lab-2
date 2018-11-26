@@ -21,11 +21,11 @@ using System.Threading;
 
 namespace berezin_lab_2
 {
-    
+    using System.Data.Entity;
     using static BitmapImageConverter;
     using static Json;
 
-    
+
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
@@ -35,13 +35,13 @@ namespace berezin_lab_2
         public MainWindow()
         {
             InitializeComponent();
-                foreach (PersonControlData obj in db.PersonControlDatas)
-                {
-                    PersonControl pc = new PersonControl();
-                    pc.Data = obj;
-                    persons_list.Add(pc);
-                    //MessageBox.Show(pc.ToString());
-                }
+            foreach (PersonControlData obj in db.PersonControlDatas)
+            {
+                PersonControl pc = new PersonControl();
+                pc.Data = obj;
+                persons_list.Add(pc);
+                //MessageBox.Show(pc.ToString());
+            }
             PersonListBox.ItemsSource = persons_list;
         }
 
@@ -55,12 +55,12 @@ namespace berezin_lab_2
             {
                 e.CanExecute = false;
             }
-            
+
         }
 
         private void SaveImage(object sender, ExecutedRoutedEventArgs e)
         {
-            
+
             SaveFileDialog save_diag = new SaveFileDialog();
             if (save_diag.ShowDialog() == true)
             {
@@ -104,7 +104,7 @@ namespace berezin_lab_2
                 try
                 {
                     string[] file_names = open_diag.FileNames;
-                    persons_list.Clear();
+                    //persons_list.Clear();
                     foreach (var name in file_names)
                     {
                         PersonControl obj = new PersonControl();
@@ -128,7 +128,7 @@ namespace berezin_lab_2
 
         private void DrawInfoOnObjectField(PersonControl obj)
         {
-            
+
             ObjectField.Children.Clear();
             if (obj.PersonsList.Count != 0)
             {
@@ -167,14 +167,17 @@ namespace berezin_lab_2
             }
         }
 
-        
+
         CancellationTokenSource TokenSource = new CancellationTokenSource();
 
         private void DetectFacesAsync(object sender, ExecutedRoutedEventArgs e)
         {
             //List<Task> task_list = new List<Task>();
             var context = TaskScheduler.FromCurrentSynchronizationContext();
-            foreach (var person_control in persons_list)
+            var NotDetectedList = from obj in persons_list
+                                  where obj.Result != true
+                                  select obj;
+            foreach (var person_control in NotDetectedList)
             {
                 CancellationToken token = TokenSource.Token;
 
@@ -216,9 +219,8 @@ namespace berezin_lab_2
                             var data = person_control.Data;
                             db.PersonControlDatas.Add(data);
                             db.SaveChanges();
-                            person_control.Id=data.Id;
-                           
-                        }                        
+                            person_control.Id = data.Id;
+                        }
                     }
                     person_control.ProgressBar.Visibility = Visibility.Collapsed;
                     if ((persons_list.IndexOf(person_control) == PersonListBox.SelectedIndex) &&
@@ -228,17 +230,7 @@ namespace berezin_lab_2
                     }
                     person_control.DrawOnImage();
 
-                    //using (DataBase db = new DataBase())
-                    //{
-                    //    var users = db.PersonControlDatas;
-                    //    String str = "Список объектов:";
-                    //    foreach (PersonControlData u in users)
-                    //    {
-                    //        str += u.Id + "\n";
-                    //    }
-                    //    MessageBox.Show(str);
-                    //}
-                }, token, TaskCreationOptions.None, context);               
+                }, token, TaskCreationOptions.None, context);
             }
         }
 
@@ -260,12 +252,19 @@ namespace berezin_lab_2
             e.CanExecute = true;
         }
 
-        private void DetectNewOrError(object sender, ExecutedRoutedEventArgs e)
+        private void ClearDataBase(object sender, ExecutedRoutedEventArgs e)
         {
-
+            foreach (PersonControl pc in persons_list)
+            {
+                if (pc.Result == true)
+                {
+                    RemoveFromDataBase(pc.Id ?? -1);
+                }
+            }
+            persons_list.Clear();
         }
 
-        private void CanDetectNewOrError(object sender, CanExecuteRoutedEventArgs e)
+        private void CanClearDataBase(object sender, CanExecuteRoutedEventArgs e)
         {
             if (persons_list.Count != 0)
             {
@@ -273,19 +272,45 @@ namespace berezin_lab_2
             }
         }
 
-        private void ClearDataBase(object sender, ExecutedRoutedEventArgs e)
+        private void RemoveFromDataBase(int id)
         {
+            if (id != -1)
+            {
 
+                PersonControlData obj = db.PersonControlDatas.FirstOrDefault(p => p.Id == id);
+                db.PersonControlDatas.Attach(obj);
+                if (obj.PersonsList != null)
+                    foreach (var child in obj.PersonsList.ToList())
+                    {
+                        db.Entry(child.faceAttributes).State = EntityState.Deleted;
+                        db.Entry(child.faceRectangle).State = EntityState.Deleted;
+                        db.Entry(child).State = EntityState.Deleted;
+                    }
+                if (obj.ErrorResult != null)
+                    db.Entry(obj.ErrorResult).State = EntityState.Deleted;
+                db.PersonControlDatas.Remove(obj);
+                db.SaveChanges();
+            }
         }
 
-        private void CanClearDataBase(object sender, CanExecuteRoutedEventArgs e)
+        private void RemoveObj(object sender, ExecutedRoutedEventArgs e)
         {
-
+            int num = PersonListBox.SelectedIndex;
+            PersonControl pc = persons_list[num];
+            //It's in DataBase
+            if (pc.Result == true)
+            {
+                RemoveFromDataBase(pc.Id ?? -1);
+            }
+            persons_list.RemoveAt(num);
         }
 
-        private void DO_remove_obj(object sender, RoutedEventArgs e)
+        private void CanRemoveObj(object sender, CanExecuteRoutedEventArgs e)
         {
-
+            if (PersonListBox.SelectedIndex != -1)
+            {
+                e.CanExecute = true;
+            }
         }
     }
 }

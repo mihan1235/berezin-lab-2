@@ -76,7 +76,7 @@
             set;
         }
 
-        public ErrorResult ErrorResult
+        public virtual ErrorResult ErrorResult
         {
             get;
             set;
@@ -145,12 +145,14 @@
 
     public class ErrorResult
     {
+
         public int ErrorResultId
         {
             get;
             set;
         }
-        public Error error { get; set; }
+        [Required]
+        public virtual Error error { get; set; }
         public override string ToString()
         {
             return "Error\n"
@@ -168,7 +170,9 @@
             set;
         }
         public string faceId { get; set; }
+        [Required]
         public virtual FaceRectangle faceRectangle { get; set; }
+        [Required]
         public virtual FaceAttributes faceAttributes { get; set; }
         public override string ToString()
         {

@@ -22,6 +22,9 @@
         <CommandBinding Command="local:CustomCommands.ClearDataBase"
                         Executed="ClearDataBase"
                         CanExecute="CanClearDataBase"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Delete"
+                        Executed="RemoveObj"
+                        CanExecute="CanRemoveObj"></CommandBinding>
     </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -72,7 +75,8 @@
                  >
             <ListBox.ContextMenu>
                 <ContextMenu >
-                    <MenuItem Header="Remove" Click="DO_remove_obj"></MenuItem>
+                    <MenuItem Header="Remove" 
+                              Command="ApplicationCommands.Delete"></MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
